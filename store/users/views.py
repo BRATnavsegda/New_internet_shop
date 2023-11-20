@@ -1,11 +1,15 @@
 from django.shortcuts import render
 
+from users.forms import UserLoginForm
+
 
 # Create your views here.
 
 def login(request):
     context = {
-        "title": "Авторизация пользователя UPGrade PC"
+        "title": "Авторизация пользователя UPGrade PC",
+        'login_form': UserLoginForm(),
+
     }
     return render(request, 'users/login.html', context)
 
