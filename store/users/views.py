@@ -16,7 +16,7 @@ def login(request):
             user = auth.authenticate(username=username, password=password)
             if user:
                 auth.login(request, user)
-                messages.success(request, 'Вы успешно авторизовались')
+                messages.success(request, 'Вы успешно авторизованы')
                 return HttpResponseRedirect(reverse('index'))
     else:
         form = UserLoginForm()
@@ -58,3 +58,8 @@ def profile(request):
         'form': form,
     }
     return render(request, 'users/profile.html', context)
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('index'))
