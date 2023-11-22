@@ -13,10 +13,18 @@ def index(request):
     return render(request, 'products/index.html', context)
 
 
-def products(request):
+def products(request, category_id=None):
+
+    # if category_id:
+    #     products_ = Product.objects.filter(category__id=category_id)
+    # else:
+    #     products_ = Product.objects.all()
+
+    products_ = Product.objects.filter(category__id=category_id) if category_id else Product.objects.all()
+
     context = {
         "title": "UPGrade PC - Каталог",
-        'products': Product.objects.all(),
+        'products': products_,
         'categories': ProductCategory.objects.all(),
     }
     return render(request, 'products/products.html', context)
