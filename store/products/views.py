@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from products.models import Product, ProductCategory, Basket
+from django.core.paginator import Paginator
 from users.models import User
 
 
@@ -13,7 +14,7 @@ def index(request):
     return render(request, 'products/index.html', context)
 
 
-def products(request, category_id=None):
+def products(request, category_id=None, page_number=1):
 
     # if category_id:
     #     products_ = Product.objects.filter(category__id=category_id)
@@ -21,10 +22,13 @@ def products(request, category_id=None):
     #     products_ = Product.objects.all()
 
     products_ = Product.objects.filter(category__id=category_id) if category_id else Product.objects.all()
+    per_page = 6
+    paginator = Paginator(products_, per_page)
+    products_paginator = paginator.page(page_number)
 
     context = {
         "title": "UPGrade PC - Каталог",
-        'products': products_,
+        'products': products_paginator,
         'categories': ProductCategory.objects.all(),
     }
     return render(request, 'products/products.html', context)
