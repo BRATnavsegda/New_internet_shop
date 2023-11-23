@@ -1,10 +1,11 @@
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponseRedirect
-from django.urls import reverse
-
+from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import CreateView
 from products.models import Basket
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
+from users.models import User
 
 
 # Create your views here.
@@ -29,22 +30,27 @@ def login(request):
     }
     return render(request, 'users/login.html', context)
 
+class UserRegistrationView(CreateView):
+    model = User
+    template_name = 'users/registration.html'
+    form_class = UserRegistrationForm
+    success_url = reverse_lazy('users:login')
 
-def registration(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрированы')
-            return HttpResponseRedirect(reverse('users:login'))
-    else:
-        form = UserRegistrationForm()
-
-    context = {
-        "title": "Регистрация нового пользователя UPGrade PC",
-        "form": form,
-    }
-    return render(request, 'users/registration.html', context)
+# def registration(request):
+#     if request.method == 'POST':
+#         form = UserRegistrationForm(data=request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Вы успешно зарегистрированы')
+#             return HttpResponseRedirect(reverse('users:login'))
+#     else:
+#         form = UserRegistrationForm()
+#
+#     context = {
+#         "title": "Регистрация нового пользователя UPGrade PC",
+#         "form": form,
+#     }
+#     return render(request, 'users/registration.html', context)
 
 
 @login_required
@@ -56,7 +62,6 @@ def profile(request):
             return HttpResponseRedirect(reverse('users:profile'))
     else:
         form = UserProfileForm(instance=request.user)
-
 
     context = {
         'title': 'Профиль пользователя UPGrade PC',
