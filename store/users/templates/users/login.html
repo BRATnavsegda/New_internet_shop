@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-5">
-                        {% if messages or login_form.non_field_errors %}
+                        {% if messages or form.non_field_errors %}
                         <div class="alert 
                          {% if messages %} alert-success {% else %} alert-warning {% endif %}
                          alert-dismissible fade show" role="alert"
@@ -15,7 +15,7 @@
                                     {{ message }}
                                 {% endfor %}
                             {% else %}
-                                {{ login_form.non_field_errors }}
+                                {{ form.non_field_errors }}
                             {% endif %}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -28,14 +28,13 @@
                             <div class="card-body">
                                 <form action="{% url 'users:login' %}" method="post">
                                     {% csrf_token %}
-{#                                    {{ login_form.as_p }}#}
                                     <div class="form-group">
-                                        <label class="small mb-1" for="{{ login_form.username.id_for_label }}">Имя пользователя</label>
-                                        {{ login_form.username }}
+                                        <label class="small mb-1" for="{{ form.username.id_for_label }}">Имя пользователя</label>
+                                        {{ form.username }}
                                     </div>
                                     <div class="form-group">
-                                        <label class="small mb-1" for="{{ login_form.password.id_for_label }}">Пароль</label>
-                                        {{ login_form.password }}
+                                        <label class="small mb-1" for="{{ form.password.id_for_label }}">Пароль</label>
+                                        {{ form.password }}
                                     </div>
                                     <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                                         <a class="small" href="#">Забыли пароль?</a>

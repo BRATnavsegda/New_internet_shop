@@ -1,41 +1,49 @@
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
 from products.models import Basket
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from users.models import User
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 # Create your views here.
 
-def login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = auth.authenticate(username=username, password=password)
-            if user:
-                auth.login(request, user)
-                messages.success(request, 'Вы успешно авторизованы')
-                return HttpResponseRedirect(reverse('index'))
-    else:
-        form = UserLoginForm()
-    context = {
-        "title": "Авторизация пользователя UPGrade PC",
-        'login_form': form,
-
-    }
-    return render(request, 'users/login.html', context)
+class UserLoginView(LoginView):
+    template_name = 'users/login.html'
+    form_class = UserLoginForm
 
 
-class UserRegistrationView(CreateView):
+# def login(request):
+#     if request.method == 'POST':
+#         form = UserLoginForm(data=request.POST)
+#         if form.is_valid():
+#             username = request.POST['username']
+#             password = request.POST['password']
+#             user = auth.authenticate(username=username, password=password)
+#             if user:
+#                 auth.login(request, user)
+#                 messages.success(request, 'Вы успешно авторизованы')
+#                 return HttpResponseRedirect(reverse('index'))
+#     else:
+#         form = UserLoginForm()
+#     context = {
+#         "title": "Авторизация пользователя UPGrade PC",
+#         'login_form': form,
+#
+#     }
+#     return render(request, 'users/login.html', context)
+
+
+class UserRegistrationView(SuccessMessageMixin, CreateView):
     model = User
-    template_name = 'users/registration.html'
     form_class = UserRegistrationForm
+    template_name = 'users/registration.html'
     success_url = reverse_lazy('users:login')
+    success_message = 'Вы успешно зарегистрированы'
 
     def get_context_data(self, **kwargs):
         context = super(UserRegistrationView, self).get_context_data()
