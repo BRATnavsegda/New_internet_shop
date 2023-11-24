@@ -3,12 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from products.models import Basket
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, EmailVerification
 from users.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from common.views import TitleMixin
+from django.shortcuts import HttpResponseRedirect
 
 
 # Create your views here.
@@ -49,8 +51,6 @@ class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     title = "UPGrade PC - Регистрация"
 
 
-
-
 class UserProfileView(TitleMixin, UpdateView):
     model = User
     template_name = 'users/profile.html'
@@ -66,10 +66,20 @@ class UserProfileView(TitleMixin, UpdateView):
         return context
 
 
-@login_required
-def logout(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))
+class EmailVerificationView(TitleMixin, TemplateView):
+    title = "UPGrade PC - Подтверждение электронной почты"
+    template_name = 'users/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        code = kwargs['code']
+        user = User.objects.get(email=kwargs['email'])
+        email_verifications = EmailVerification.objects.filter(user=user, code=code)
+        if email_verifications.exists() and not email_verifications.first().is_expired():
+            user.is_verified_email = True
+            user.save()
+            return super(EmailVerificationView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse('index'))
 
 # def registration(request):
 #     if request.method == 'POST':
@@ -105,3 +115,9 @@ def logout(request):
 #
 #     }
 #     return render(request, 'users/profile.html', context)
+
+
+# @login_required
+# def logout(request):
+#     auth.logout(request)
+#     return HttpResponseRedirect(reverse('index'))
