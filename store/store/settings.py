@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
-import django.core.mail.backends.console
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -145,10 +143,11 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Sending emails
 
+# import django.core.mail.backends.console
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EMAIL_HOST = 'smtp.yandex.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'server.bratnavsegda@yandex.com'
-EMAIL_HOST_PASSWORD = 'npaaenvchbdwibzb' # npaaenvchbdwibzb
+EMAIL_HOST_PASSWORD = 'npaaenvchbdwibzb'  # npaaenvchbdwibzb
 EMAIL_USE_SSL = True

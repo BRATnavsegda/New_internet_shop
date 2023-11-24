@@ -1,19 +1,15 @@
-from django.contrib import auth, messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render, HttpResponseRedirect
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
-from products.models import Basket
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, EmailVerification
-from users.models import User
-from django.contrib.messages.views import SuccessMessageMixin
+
 from common.views import TitleMixin
-from django.shortcuts import HttpResponseRedirect
+from users.forms import (EmailVerification, UserLoginForm, UserProfileForm,
+                         UserRegistrationForm)
+from users.models import User
 
-
-# Create your views here.
 
 class UserLoginView(TitleMixin, LoginView):
     template_name = 'users/login.html'
@@ -59,7 +55,6 @@ class UserProfileView(TitleMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('users:profile', args=(self.object.id,))
-
 
 
 class EmailVerificationView(TitleMixin, TemplateView):
