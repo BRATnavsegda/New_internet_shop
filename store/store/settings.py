@@ -179,13 +179,13 @@ LOGOUT_REDIRECT_URL = '/'
 # Sending emails
 
 # import django.core.mail.backends.console
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# EMAIL_HOST = 'smtp.yandex.com'
-# EMAIL_PORT = 465
-# EMAIL_HOST_USER = 'server.bratnavsegda@yandex.com'
-# EMAIL_HOST_PASSWORD = 'npaaenvchbdwibzb'  # npaaenvchbdwibzb
-# EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.yandex.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'server.bratnavsegda@yandex.com'
+EMAIL_HOST_PASSWORD = 'npaaenvchbdwibzb'  # npaaenvchbdwibzb
+EMAIL_USE_SSL = True
 
 
 # Oauth
@@ -207,3 +207,8 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
     }
 }
+
+# Celery
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
