@@ -2,11 +2,23 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.shortcuts import HttpResponseRedirect
+from django.views.generic.list import ListView
 
 from orders.forms import OrderForm
 from common.views import TitleMixin
 from orders.models import Order
 from products.models import Basket
+
+
+class OrderListView(TitleMixin, ListView):
+    template_name = 'orders/orders.html'
+    title = 'UPGrade PC - Заказы'
+    queryset = Order.objects.all()
+    ordering = '-created'
+
+    def get_queryset(self):
+        queryset = super(OrderListView, self).get_queryset()
+        return queryset.filter(initiator=self.request.user)
 
 
 class OrderCreateView(TitleMixin, CreateView):
