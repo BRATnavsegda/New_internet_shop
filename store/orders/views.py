@@ -1,12 +1,12 @@
+from django.shortcuts import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
-from django.shortcuts import HttpResponseRedirect
+from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 
-from orders.forms import OrderForm
 from common.views import TitleMixin
+from orders.forms import OrderForm
 from orders.models import Order
 from products.models import Basket
 
@@ -53,7 +53,6 @@ class OrderDetailView(DetailView):
 
 class CanceledTemplateView(TemplateView):
     template_name = 'orders/canceled.html'
-
 
 
 class SuccessTemplateView(TitleMixin, TemplateView):
