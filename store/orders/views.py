@@ -5,6 +5,8 @@ from django.shortcuts import HttpResponseRedirect
 
 from orders.forms import OrderForm
 from common.views import TitleMixin
+from orders.models import Order
+from products.models import Basket
 
 
 class OrderCreateView(TitleMixin, CreateView):
@@ -14,7 +16,10 @@ class OrderCreateView(TitleMixin, CreateView):
     title = 'UPGrade PC - Оформление заказа'
 
     def post(self, request, *args, **kwargs):
-        super(OrderCreateView, self).post(request, *args, **kwargs)
+        if Basket.objects.filter(user=request.user.id):
+            super(OrderCreateView, self).post(request, *args, **kwargs)
+            Order.objects.filter(initiator=request.user.id).last().update_after_payment()
+            return HttpResponseRedirect(reverse_lazy('orders:order_success'))
 
         return HttpResponseRedirect(reverse_lazy('orders:order_canceled'))
 
