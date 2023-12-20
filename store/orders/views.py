@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic.list import ListView
 
@@ -40,8 +41,19 @@ class OrderCreateView(TitleMixin, CreateView):
         return super(OrderCreateView, self).form_valid(form)
 
 
+class OrderDetailView(DetailView):
+    template_name = 'orders/order.html'
+    model = Order
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderDetailView, self).get_context_data(**kwargs)
+        context['title'] = f'UPGrade PC - Заказ #{self.object.id}'
+        return context
+
+
 class CanceledTemplateView(TemplateView):
     template_name = 'orders/canceled.html'
+
 
 
 class SuccessTemplateView(TitleMixin, TemplateView):
