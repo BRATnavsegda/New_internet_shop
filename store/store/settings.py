@@ -10,25 +10,51 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import django.core.mail.backends.console
+import environ
 from pathlib import Path
+
+env = environ.Env(
+    DEBUG=(bool),
+    SECRET_KEY=(str),
+    DOMAIN_NAME=(str),
+
+    REDIS_HOST=(str),
+    REDIS_PORT=(str),
+
+    DATABASE_NAME=(str),
+    DATABASE_USER=(str),
+    DATABASE_PASSWORD=(str),
+    DATABASE_HOST=(str),
+    DATABASE_PORT=(str),
+
+    EMAIL_HOST=(str),
+    EMAIL_PORT=(int),
+    EMAIL_HOST_USER=(str),
+    EMAIL_HOST_PASSWORD=(str),
+    EMAIL_USE_SSL=(bool),
+
+
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Take environment variables from .env file
+environ.Env.read_env(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lmt%dfk_eqfiv0lw4+k4i+64updo2t&w(8n=r(&-0&$uv$_cwv'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
-DOMAIN_NAME = 'http://localhost:8000'
-
+DOMAIN_NAME = env('DOMAIN_NAME')
 
 # Application definition
 
@@ -93,13 +119,19 @@ INTERNAL_IPS = [
     'localhost',
 ]
 
+# Redis
+
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env('REDIS_PORT')
+
+# Cashes
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}',
     }
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -122,7 +154,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -141,7 +172,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -152,7 +182,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -180,15 +209,14 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Sending emails
 
-# import django.core.mail.backends.console
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-EMAIL_HOST = 'smtp.yandex.com'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'server.bratnavsegda@yandex.com'
-EMAIL_HOST_PASSWORD = 'npaaenvchbdwibzb'  # npaaenvchbdwibzb
-EMAIL_USE_SSL = True
-
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = env('EMAIL_HOST')
+    EMAIL_PORT = env('EMAIL_PORT')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+    EMAIL_USE_SSL = env('EMAIL_USE_SSL')
 
 # Oauth
 
@@ -212,5 +240,5 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Celery
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'
