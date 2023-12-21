@@ -1,0 +1,87 @@
+{% extends 'products/base.html' %}
+{% load static humanize %}
+
+{% block css %}
+    <link href="{% static 'vendor/css/products.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-lg-3">
+
+                <div class="list-group">
+                    {% for category in categories %}
+                        <a href="{% url 'products:category' category.id %}" class="list-group-item">
+                            {{ category.name }}
+                        </a>
+                    {% endfor %}
+
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-9">
+
+                <div class="row">
+                    <div class=" mb-4">
+
+                        <div class="card h-100">
+                            <a href="#">
+                                <img class="card-img-top"
+                                     src="{{ product.image.url }}"
+                                     alt="{{ product.description }}">
+                            </a>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <a href="#">{{ product.name }}</a>
+                                </h4>
+                                <p class="text-center">{{ product.description }}</p>
+
+
+                            </div>
+
+                            <p class="text-center">{{ product.specifications }}</p>
+                            <div class="text-center">
+                                <p class="text-nowrap-center badge bg-primary " style="width: 12rem; font-size: 20px">
+                                    Цена: {{ product.price|intcomma }} руб. </p>
+                            </div>
+                            <div class="card-footer text-center">
+
+                                <a class="btn btn-outline-success"
+                                   href="{% url 'products:basket_add' product.id %}">
+                                    Отправить в корзину <br> (В наличии {{ product.quantity|apnumber }} )
+                                </a>
+                                <p></p>
+                                <a class="btn btn-outline-success"
+                                   href="{% url 'products:index' %}">
+                                    Вернуться к товарам
+                                </a>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white"> {{ title }}</p>
+            <p class="m-0 text-center text-white">Copyright &copy; 'BRATnavsegda' 2023 </p>
+        </div>
+    </footer>
+{% endblock %}

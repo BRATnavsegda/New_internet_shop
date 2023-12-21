@@ -2,10 +2,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.shortcuts import HttpResponseRedirect
 from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from common.views import TitleMixin
 from products.models import Basket, Product, ProductCategory
+
 
 # Create your views here.
 
@@ -32,13 +34,25 @@ class ProductsListView(TitleMixin, ListView):
         return queryset.filter(category__id=category_id) if category_id else queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(ProductsListView, self).get_context_data()
+        context = super(ProductsListView, self).get_context_data(**kwargs)
         categories = cache.get('categories')
         if not categories:
             context['categories'] = ProductCategory.objects.all()
             cache.set('categories', context['categories'], 30)
         else:
             context['categories'] = categories
+        return context
+
+
+class ProductDetailView(DetailView):
+    template_name = 'products/product.html'
+    model = Product
+    context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductDetailView, self).get_context_data(**kwargs)
+        context['title'] = f'UPGrade PC - {self.object.name}'
+        context['categories'] = ProductCategory.objects.all()
         return context
 
 
